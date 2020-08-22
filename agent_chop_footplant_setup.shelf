@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shelfDocument>
+  <!-- This file contains definitions of shelves, toolbars, and tools.
+ It should not be hand-edited when it is being used by the application.
+ Note, that two definitions of the same element are not allowed in
+ a single file. -->
+
+  <tool name="setup_agent_fp_chop" label="Agent_Footplant_Terrain_Dist_Setup" icon="CHOP_footplant">
+    <script scriptType="python"><![CDATA[nodes = hou.selectedNodes()
+
+for n in nodes:
+    if n.type().name() == 'chopnet':
+        subnodes = n.allSubChildren()
+        
+        nodegrp = n.parmTemplateGroup()
+        
+        parmname = 'dist_thresh' 
+        
+        nodegrp.append(hou.FloatParmTemplate(parmname, 'Distance Threshold', 1))
+        
+        n.setParmTemplateGroup(nodegrp)
+        
+        n.parm(parmname).set(0.15)
+        
+        for sn in subnodes:
+            if sn.isInsideLockedHDA() == False:
+                if sn.type().name() == 'footplant':
+                    sn.parm('method').set(1)
+                    sn.parm('distancethreshold').set(n.parm(parmname))
+    else:
+        hou.ui.displayMessage('Please select a CHOPnet to use this tool')]]></script>
+  </tool>
+</shelfDocument>
